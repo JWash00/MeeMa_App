@@ -1,0 +1,28 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "version": "1.0.0",
+  "name": "Invalid - Missing Required Block",
+  "description": "This asset has no required output blocks",
+  "createdAt": "2025-01-01T00:00:00Z",
+  "updatedAt": "2025-01-01T00:00:00Z",
+  "capability": "text-generation",
+  "modality": "text",
+  "status": "draft",
+  "visibility": "private",
+  "riskTier": "low",
+  "userPromptTemplate": "Generate text about {{topic}}",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "topic": { "type": "string" }
+    },
+    "required": ["topic"]
+  },
+  "outputBlocks": [
+    {
+      "key": "OPTIONAL_OUTPUT",
+      "description": "Optional output",
+      "required": false
+    }
+  ]
+}

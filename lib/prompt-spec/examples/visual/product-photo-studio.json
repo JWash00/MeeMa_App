@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "mps.v0.1",
+  "id": "product-photo-studio",
+  "title": "Product Photo Studio",
+  "description": "Generate professional product photography prompts optimized for e-commerce and marketing",
+  "version": "1.0",
+  "type": "workflow",
+  "category": "Visual/Product",
+  "capability": "image_visual",
+  "renderTargets": ["midjourney_v6", "sdxl"],
+  "promptPartsSpec": {
+    "supportsNegative": true,
+    "supportsLighting": true,
+    "supportsComposition": true
+  },
+  "content": {
+    "text": "## TASK\nGenerate a multi-provider image prompt pack for professional product photography.\n\n## INPUTS\n- Product: {{product_name}}\n- Style: {{photo_style}}\n- Background: {{background}}\n- Lighting: {{lighting}}\n- Aspect Ratio: {{aspect_ratio}}\n\n## CONSTRAINTS\n- Output must be pure JSON (no markdown fences)\n- Prompts must be specific and detailed\n- Include negative prompts to avoid common issues\n- Parameters must be within safe ranges\n\n## OUTPUT FORMAT\nReturn JSON with this exact structure:\n{\n  \"intent\": \"product_photo\",\n  \"providers\": {\n    \"midjourney_v6\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"ar\": \"1:1\", \"stylize\": 100 },\n      \"instructions\": \"/imagine prompt: [positive] --ar [ar] --stylize [stylize] --no [negative]\"\n    },\n    \"sdxl\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"width\": 1024, \"height\": 1024, \"steps\": 30, \"cfg\": 7 }\n    }\n  },\n  \"notes\": [\"usage tips\"]\n}\n\n## QUALITY CHECKS\n- [ ] Positive prompt includes clear subject description\n- [ ] Style keywords present for consistency\n- [ ] No markdown formatting in output\n- [ ] Parameters within provider limits",
+    "blocks": [
+      {
+        "type": "TASK",
+        "content": "Generate multi-provider product photography prompts",
+        "required": true
+      },
+      {
+        "type": "INPUTS",
+        "content": "Product name, photo style, background, lighting, aspect ratio",
+        "required": true
+      },
+      {
+        "type": "CONSTRAINTS",
+        "content": "Pure JSON output, specific prompts, include negatives, safe parameters",
+        "required": true
+      },
+      {
+        "type": "OUTPUT_FORMAT",
+        "content": "JSON prompt pack with providers object",
+        "required": true
+      },
+      {
+        "type": "QUALITY_CHECKS",
+        "content": "Subject description, style keywords, no markdown, valid params",
+        "required": true
+      }
+    ],
+    "language": "markdown"
+  },
+  "inputs": [
+    {
+      "key": "product_name",
+      "label": "Product Name",
+      "type": "text",
+      "placeholder": "e.g., Premium wireless headphones",
+      "required": true
+    },
+    {
+      "key": "photo_style",
+      "label": "Photo Style",
+      "type": "select",
+      "options": ["Studio White", "Lifestyle", "Editorial", "Minimal", "Luxury"],
+      "default": "Studio White",
+      "required": true
+    },
+    {
+      "key": "background",
+      "label": "Background",
+      "type": "select",
+      "options": ["Clean white", "Gradient", "Textured surface", "Lifestyle setting", "Transparent"],
+      "default": "Clean white",
+      "required": true
+    },
+    {
+      "key": "lighting",
+      "label": "Lighting Style",
+      "type": "select",
+      "options": ["Soft diffused", "Dramatic", "Natural window", "Studio flash", "Rim light"],
+      "default": "Soft diffused",
+      "required": true
+    },
+    {
+      "key": "aspect_ratio",
+      "label": "Aspect Ratio",
+      "type": "select",
+      "options": ["1:1 (Square)", "4:3 (Standard)", "16:9 (Wide)", "3:4 (Portrait)", "2:3 (Tall)"],
+      "default": "1:1 (Square)",
+      "required": true
+    }
+  ],
+  "outputs": {
+    "format": "json",
+    "schema": {
+      "type": "object",
+      "required": ["intent", "providers"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["product_photo"]
+        },
+        "providers": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "examples": [
+      "{\"intent\":\"product_photo\",\"providers\":{\"midjourney_v6\":{\"positive\":\"Professional studio product photo of premium wireless headphones, clean white seamless background, soft diffused lighting, commercial photography, sharp focus, high-end product shot, 8k quality\",\"negative\":\"blurry, low quality, distorted, amateur, shadows, noise\",\"params\":{\"ar\":\"1:1\",\"stylize\":100,\"quality\":1},\"instructions\":\"/imagine prompt: Professional studio product photo of premium wireless headphones, clean white seamless background, soft diffused lighting, commercial photography, sharp focus, high-end product shot, 8k quality --ar 1:1 --stylize 100 --q 1 --no blurry, low quality, distorted, amateur, shadows, noise\"},\"sdxl\":{\"positive\":\"Professional studio product photo of premium wireless headphones, clean white seamless background, soft diffused lighting, commercial photography, sharp focus, high-end product shot, 8k quality\",\"negative\":\"blurry, low quality, distorted, amateur, harsh shadows, noise, artifacts\",\"params\":{\"width\":1024,\"height\":1024,\"steps\":30,\"cfg\":7}}},\"notes\":[\"Use a light tent or softbox for even lighting\",\"Consider multiple angles for e-commerce listings\"]}"
+    ]
+  },
+  "quality": {
+    "trustLevel": "gold",
+    "status": "production",
+    "score": 95,
+    "checks": {
+      "hasRequiredBlocks": true,
+      "hasInputsSchema": true,
+      "hasOutputFormat": true,
+      "hasQualityChecks": true,
+      "placeholderAlignment": true
+    },
+    "issues": [],
+    "fallback": {
+      "onSchemaFail": "repair_json",
+      "maxRetries": 1
+    }
+  },
+  "execution": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "temperature": 0.4,
+    "maxTokens": 2000
+  },
+  "agentReadiness": {
+    "isReady": true,
+    "automationPlatforms": ["n8n", "zapier"],
+    "requiredCapabilities": ["text-processing"],
+    "notes": "Output can be directly used with Midjourney Discord bot or SDXL API"
+  },
+  "tags": ["product", "photography", "e-commerce", "studio", "commercial", "visual"],
+  "author": "meema-team",
+  "createdAt": "2026-01-16T00:00:00Z",
+  "updatedAt": "2026-01-16T00:00:00Z"
+}

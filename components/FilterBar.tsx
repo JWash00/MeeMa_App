@@ -33,18 +33,18 @@ export default function FilterBar({
 
   return (
     <div className="mb-8 max-w-7xl mx-auto">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-surface rounded-lg border border-border p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Language Filter */}
           <div>
-            <label htmlFor="language-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="language-filter" className="block text-sm font-medium text-muted mb-2">
               Language
             </label>
             <select
               id="language-filter"
               value={selectedLanguage}
               onChange={(e) => onLanguageChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 bg-bg border border-border rounded-md text-text focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent/50"
             >
               <option value="">All languages</option>
               {languages.map((lang) => (
@@ -57,14 +57,14 @@ export default function FilterBar({
 
           {/* Provider Filter */}
           <div>
-            <label htmlFor="provider-filter" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="provider-filter" className="block text-sm font-medium text-muted mb-2">
               Provider
             </label>
             <select
               id="provider-filter"
               value={selectedProvider}
               onChange={(e) => onProviderChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 bg-bg border border-border rounded-md text-text focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent/50"
             >
               <option value="">All providers</option>
               {providers.map((provider) => (
@@ -77,12 +77,12 @@ export default function FilterBar({
 
           {/* Tags Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-muted mb-2">
               Tags
             </label>
-            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border border-gray-200 rounded-md">
+            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 bg-bg border border-border rounded-md">
               {allTags.length === 0 ? (
-                <span className="text-sm text-gray-500">No tags available</span>
+                <span className="text-sm text-muted">No tags available</span>
               ) : (
                 allTags.map((tag) => (
                   <button
@@ -90,8 +90,8 @@ export default function FilterBar({
                     onClick={() => toggleTag(tag)}
                     className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                       selectedTags.includes(tag)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-accent/10 border border-accent text-accent'
+                        : 'bg-surface-2 text-muted hover:bg-surface-2 hover:text-text'
                     }`}
                   >
                     {tag}
@@ -100,7 +100,7 @@ export default function FilterBar({
               )}
             </div>
             {selectedTags.length > 0 && (
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-muted">
                 {selectedTags.length} tag{selectedTags.length !== 1 ? 's' : ''} selected
               </p>
             )}

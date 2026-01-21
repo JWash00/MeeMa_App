@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "mps.v0.1",
+  "id": "logo-generator",
+  "title": "Logo & Brand Mark Generator",
+  "description": "Generate logo and brand identity design prompts for various business types",
+  "version": "1.0",
+  "type": "workflow",
+  "category": "Visual/Branding",
+  "capability": "image_visual",
+  "renderTargets": ["midjourney_v6", "sdxl"],
+  "promptPartsSpec": {
+    "supportsNegative": true,
+    "supportsLighting": false,
+    "supportsComposition": true
+  },
+  "content": {
+    "text": "## TASK\nGenerate a multi-provider image prompt pack for logo and brand mark design.\n\n## INPUTS\n- Brand Name: {{brand_name}}\n- Industry: {{industry}}\n- Style: {{logo_style}}\n- Color Preference: {{color_preference}}\n- Symbol/Icon: {{symbol_hint}}\n\n## CONSTRAINTS\n- Output must be pure JSON (no markdown fences)\n- Logos must be clean and scalable\n- Avoid complex gradients that don't scale well\n- Focus on memorable, distinctive designs\n\n## OUTPUT FORMAT\nReturn JSON with this exact structure:\n{\n  \"intent\": \"logo\",\n  \"providers\": {\n    \"midjourney_v6\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"ar\": \"1:1\", \"stylize\": 50 },\n      \"instructions\": \"...\"\n    },\n    \"sdxl\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"width\": 1024, \"height\": 1024, \"steps\": 40, \"cfg\": 8 }\n    }\n  },\n  \"notes\": [\"usage tips\"]\n}\n\n## QUALITY CHECKS\n- [ ] Logo concept clearly defined\n- [ ] Style appropriate for industry\n- [ ] Scalability considered\n- [ ] No markdown in output",
+    "blocks": [
+      {
+        "type": "TASK",
+        "content": "Generate multi-provider logo design prompts",
+        "required": true
+      },
+      {
+        "type": "INPUTS",
+        "content": "Brand name, industry, style, colors, symbol hint",
+        "required": true
+      },
+      {
+        "type": "CONSTRAINTS",
+        "content": "Pure JSON, clean scalable designs, avoid complex gradients",
+        "required": true
+      },
+      {
+        "type": "OUTPUT_FORMAT",
+        "content": "JSON prompt pack with providers object",
+        "required": true
+      },
+      {
+        "type": "QUALITY_CHECKS",
+        "content": "Clear concept, industry fit, scalability, no markdown",
+        "required": true
+      }
+    ],
+    "language": "markdown"
+  },
+  "inputs": [
+    {
+      "key": "brand_name",
+      "label": "Brand Name",
+      "type": "text",
+      "placeholder": "e.g., TechFlow",
+      "required": true
+    },
+    {
+      "key": "industry",
+      "label": "Industry",
+      "type": "select",
+      "options": ["Technology", "Finance", "Healthcare", "Food & Beverage", "Fashion", "Education", "Entertainment", "Other"],
+      "default": "Technology",
+      "required": true
+    },
+    {
+      "key": "logo_style",
+      "label": "Logo Style",
+      "type": "select",
+      "options": ["Minimalist", "Modern geometric", "Classic/Traditional", "Playful", "Luxury/Premium", "Abstract", "Wordmark"],
+      "default": "Minimalist",
+      "required": true
+    },
+    {
+      "key": "color_preference",
+      "label": "Color Preference",
+      "type": "select",
+      "options": ["Monochrome", "Blue tones", "Green tones", "Warm colors", "Cool colors", "Vibrant multi-color", "Black and gold"],
+      "default": "Blue tones",
+      "required": true
+    },
+    {
+      "key": "symbol_hint",
+      "label": "Symbol/Icon Hint (optional)",
+      "type": "text",
+      "placeholder": "e.g., abstract wave, mountain, letter T",
+      "required": false
+    }
+  ],
+  "outputs": {
+    "format": "json",
+    "schema": {
+      "type": "object",
+      "required": ["intent", "providers"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["logo"]
+        },
+        "providers": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "quality": {
+    "trustLevel": "verified",
+    "status": "production",
+    "score": 92,
+    "checks": {
+      "hasRequiredBlocks": true,
+      "hasInputsSchema": true,
+      "hasOutputFormat": true,
+      "hasQualityChecks": true,
+      "placeholderAlignment": true
+    },
+    "issues": [],
+    "fallback": {
+      "onSchemaFail": "repair_json",
+      "maxRetries": 1
+    }
+  },
+  "execution": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "temperature": 0.5,
+    "maxTokens": 2000
+  },
+  "agentReadiness": {
+    "isReady": true,
+    "automationPlatforms": ["n8n"],
+    "requiredCapabilities": ["text-processing"],
+    "notes": "Generated logos are starting points - vector tracing recommended for final use"
+  },
+  "tags": ["logo", "branding", "design", "identity", "visual"],
+  "author": "meema-team",
+  "createdAt": "2026-01-16T00:00:00Z",
+  "updatedAt": "2026-01-16T00:00:00Z"
+}

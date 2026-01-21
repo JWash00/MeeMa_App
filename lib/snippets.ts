@@ -1,6 +1,7 @@
-import { Snippet } from './types'
+// Legacy mock data - not used (data comes from Supabase)
+// Keeping for reference only
 
-export const snippets: Snippet[] = [
+export const snippets = [
   {
     id: 'openai-retry',
     title: 'OpenAI Chat Completion with Exponential Backoff',
@@ -355,6 +356,6 @@ export function useAnthropicStream() {
   }
 ]
 
-export function getSnippetById(id: string): Snippet | undefined {
+export function getSnippetById(id: string) {
   return snippets.find(snippet => snippet.id === id)
 }

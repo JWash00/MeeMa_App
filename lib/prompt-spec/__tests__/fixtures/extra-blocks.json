@@ -1,0 +1,29 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "version": "1.0.0",
+  "name": "Invalid - Template Variable Mismatch",
+  "description": "Template uses variables not in inputSchema",
+  "createdAt": "2025-01-01T00:00:00Z",
+  "updatedAt": "2025-01-01T00:00:00Z",
+  "capability": "text-generation",
+  "modality": "text",
+  "status": "draft",
+  "visibility": "private",
+  "riskTier": "low",
+  "userPromptTemplate": "Generate text about {{topic}} with {{style}} and {{undefined_var}}",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "topic": { "type": "string" },
+      "style": { "type": "string" }
+    },
+    "required": ["topic"]
+  },
+  "outputBlocks": [
+    {
+      "key": "OUTPUT",
+      "description": "Main output",
+      "required": true
+    }
+  ]
+}

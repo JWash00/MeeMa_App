@@ -2,9 +2,13 @@
 
 import { useState, useMemo } from 'react'
 import { Snippet } from '@/lib/types'
-import SearchBar from './SearchBar'
+import Shell from './layout/Shell'
 import SnippetList from './SnippetList'
 import FilterBar from './FilterBar'
+import SnippetDrawer from './SnippetDrawer'
+import { useDeveloperMode } from '@/lib/hooks/useDeveloperMode'
+import { isVisibleForMode } from '@/lib/utils/snippetHelpers'
+import { LIBRARY } from '@/lib/voice/voice'
 
 interface HomeClientProps {
   initialSnippets: Snippet[]
@@ -23,9 +27,14 @@ export default function HomeClient({
   const [selectedLanguage, setSelectedLanguage] = useState<string>('')
   const [selectedProvider, setSelectedProvider] = useState<string>('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [selectedSnippet, setSelectedSnippet] = useState<Snippet | null>(null)
+  const { isDeveloperMode } = useDeveloperMode()
 
   const filteredSnippets = useMemo(() => {
-    let results = initialSnippets
+    // First filter by audience based on developer mode
+    let results = initialSnippets.filter(snippet =>
+      isVisibleForMode(snippet, isDeveloperMode)
+    )
 
     // Apply search filter
     if (searchQuery.trim()) {
@@ -57,7 +66,7 @@ export default function HomeClient({
     }
 
     return results
-  }, [initialSnippets, searchQuery, selectedLanguage, selectedProvider, selectedTags])
+  }, [initialSnippets, isDeveloperMode, searchQuery, selectedLanguage, selectedProvider, selectedTags])
 
   const handleClearFilters = () => {
     setSelectedLanguage('')
@@ -68,21 +77,16 @@ export default function HomeClient({
   const hasActiveFilters = selectedLanguage || selectedProvider || selectedTags.length > 0
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-3">
-            PromptKit
+    <Shell searchQuery={searchQuery} onSearchChange={setSearchQuery}>
+      <div className="py-6">
+        {/* Page Title */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            {LIBRARY.pageTitle}
           </h1>
-          <p className="text-xl text-gray-600">
-            Production-ready AI integration snippets.
+          <p className="text-text-secondary">
+            {LIBRARY.pageSubtitle}
           </p>
-        </div>
-
-        {/* Search */}
-        <div className="mb-6 max-w-3xl mx-auto">
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
         </div>
 
         {/* Filters */}
@@ -99,7 +103,7 @@ export default function HomeClient({
         />
 
         {/* Results count and clear filters */}
-        <div className="mb-6 flex items-center justify-between text-sm text-gray-600">
+        <div className="mb-6 flex items-center justify-between text-sm text-text-secondary">
           <div>
             {(searchQuery || hasActiveFilters) && (
               <p>
@@ -110,7 +114,7 @@ export default function HomeClient({
           {hasActiveFilters && (
             <button
               onClick={handleClearFilters}
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="text-accent hover:text-accent-hover font-medium"
             >
               Clear filters
             </button>
@@ -118,8 +122,14 @@ export default function HomeClient({
         </div>
 
         {/* Snippet List */}
-        <SnippetList snippets={filteredSnippets} />
+        <SnippetList snippets={filteredSnippets} onSnippetClick={setSelectedSnippet} />
       </div>
-    </main>
+
+      {/* Snippet Drawer */}
+      <SnippetDrawer
+        snippet={selectedSnippet}
+        onClose={() => setSelectedSnippet(null)}
+      />
+    </Shell>
   )
 }

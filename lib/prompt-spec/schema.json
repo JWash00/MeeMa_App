@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meema.xyz/schemas/mps-v0.1.json",
+  "title": "Meema Prompt Spec v0.1",
+  "description": "Framework-agnostic prompt specification for production-ready AI workflows",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "title",
+    "description",
+    "version",
+    "type",
+    "content",
+    "quality",
+    "execution",
+    "tags",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "mps.v0.1",
+      "description": "Fixed schema version identifier"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier (slug format recommended)"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Semantic version (MAJOR.MINOR)"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["prompt", "workflow"]
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capability": {
+      "type": "string",
+      "enum": [
+        "image_visual",
+        "video_motion",
+        "audio_voice",
+        "writing_text",
+        "social_marketing",
+        "automation_apps"
+      ]
+    },
+    "content": {
+      "type": "object",
+      "required": ["text", "blocks"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "content", "required"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TASK",
+                  "OBJECTIVE",
+                  "INPUTS",
+                  "CONSTRAINTS",
+                  "OUTPUT_FORMAT",
+                  "QUALITY_CHECKS",
+                  "QC",
+                  "ROLE",
+                  "UNCERTAINTY_POLICY"
+                ]
+              },
+              "content": { "type": "string" },
+              "required": { "type": "boolean" }
+            }
+          }
+        },
+        "language": { "type": "string" }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "type"],
+        "properties": {
+          "key": { "type": "string" },
+          "label": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["text", "textarea", "select", "number", "boolean"]
+          },
+          "placeholder": { "type": "string" },
+          "default": {},
+          "options": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "required": { "type": "boolean" },
+          "validation": {
+            "type": "object",
+            "properties": {
+              "pattern": { "type": "string" },
+              "min": { "type": "number" },
+              "max": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["format"],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": ["text", "json", "markdown", "html", "structured"]
+        },
+        "schema": { "type": "object" },
+        "examples": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "required": ["trustLevel", "status", "checks", "issues"],
+      "properties": {
+        "trustLevel": {
+          "type": "string",
+          "enum": ["basic", "verified", "gold"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published", "production"]
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "checks": {
+          "type": "object",
+          "required": [
+            "hasRequiredBlocks",
+            "hasInputsSchema",
+            "hasOutputFormat",
+            "hasQualityChecks",
+            "placeholderAlignment"
+          ],
+          "properties": {
+            "hasRequiredBlocks": { "type": "boolean" },
+            "hasInputsSchema": { "type": "boolean" },
+            "hasOutputFormat": { "type": "boolean" },
+            "hasQualityChecks": { "type": "boolean" },
+            "placeholderAlignment": { "type": "boolean" }
+          }
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["level", "code", "message"],
+            "properties": {
+              "level": {
+                "type": "string",
+                "enum": ["error", "warning"]
+              },
+              "code": { "type": "string" },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["openai", "anthropic", "google", "other"]
+        },
+        "model": { "type": "string" },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "maxTokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "systemPrompt": { "type": "string" }
+      }
+    },
+    "agentReadiness": {
+      "type": "object",
+      "required": ["isReady", "automationPlatforms", "requiredCapabilities"],
+      "properties": {
+        "isReady": { "type": "boolean" },
+        "automationPlatforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["n8n", "zapier", "make", "custom"]
+          }
+        },
+        "requiredCapabilities": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "author": { "type": "string" },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

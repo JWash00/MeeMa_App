@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "mps.v0.1",
+  "id": "generic-image-generator",
+  "title": "Universal Image Generator",
+  "description": "Generate flexible image prompts for any subject with multi-provider output",
+  "version": "1.0",
+  "type": "workflow",
+  "category": "Visual/General",
+  "capability": "image_visual",
+  "renderTargets": ["midjourney_v6", "sdxl"],
+  "promptPartsSpec": {
+    "supportsNegative": true,
+    "supportsLighting": true,
+    "supportsComposition": true,
+    "supportsCamera": true
+  },
+  "content": {
+    "text": "## TASK\nGenerate a multi-provider image prompt pack for any subject or concept.\n\n## INPUTS\n- Subject/Concept: {{subject}}\n- Art Style: {{art_style}}\n- Quality Level: {{quality_level}}\n- Additional Details: {{additional_details}}\n- Aspect Ratio: {{aspect_ratio}}\n\n## CONSTRAINTS\n- Output must be pure JSON (no markdown fences)\n- Adapt prompts to each provider's strengths\n- Include relevant style and quality modifiers\n- Balance creativity with clarity\n\n## OUTPUT FORMAT\nReturn JSON with this exact structure:\n{\n  \"intent\": \"generic\",\n  \"providers\": {\n    \"midjourney_v6\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"ar\": \"aspect\", \"stylize\": number },\n      \"instructions\": \"...\"\n    },\n    \"sdxl\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"width\": number, \"height\": number, \"steps\": number, \"cfg\": number }\n    }\n  },\n  \"notes\": [\"usage tips\"]\n}\n\n## QUALITY CHECKS\n- [ ] Subject clearly described\n- [ ] Style consistently applied\n- [ ] Quality modifiers included\n- [ ] No markdown in output",
+    "blocks": [
+      {
+        "type": "TASK",
+        "content": "Generate multi-provider image prompts for any subject",
+        "required": true
+      },
+      {
+        "type": "INPUTS",
+        "content": "Subject, art style, quality level, additional details, aspect ratio",
+        "required": true
+      },
+      {
+        "type": "CONSTRAINTS",
+        "content": "Pure JSON, provider-optimized, include quality modifiers",
+        "required": true
+      },
+      {
+        "type": "OUTPUT_FORMAT",
+        "content": "JSON prompt pack with providers object",
+        "required": true
+      },
+      {
+        "type": "QUALITY_CHECKS",
+        "content": "Subject clarity, style consistency, quality modifiers, no markdown",
+        "required": true
+      }
+    ],
+    "language": "markdown"
+  },
+  "inputs": [
+    {
+      "key": "subject",
+      "label": "Subject/Concept",
+      "type": "textarea",
+      "placeholder": "Describe what you want to generate...",
+      "required": true
+    },
+    {
+      "key": "art_style",
+      "label": "Art Style",
+      "type": "select",
+      "options": ["Photorealistic", "Digital art", "Illustration", "Oil painting", "Watercolor", "Anime", "3D render", "Concept art", "Abstract", "Minimalist"],
+      "default": "Digital art",
+      "required": true
+    },
+    {
+      "key": "quality_level",
+      "label": "Quality Level",
+      "type": "select",
+      "options": ["Draft (fast)", "Standard", "High quality", "Ultra detailed"],
+      "default": "High quality",
+      "required": true
+    },
+    {
+      "key": "additional_details",
+      "label": "Additional Details (optional)",
+      "type": "textarea",
+      "placeholder": "Any specific details, colors, mood, lighting...",
+      "required": false
+    },
+    {
+      "key": "aspect_ratio",
+      "label": "Aspect Ratio",
+      "type": "select",
+      "options": ["1:1 (Square)", "4:3 (Standard)", "16:9 (Wide)", "9:16 (Vertical)", "3:2 (Photo)", "2:3 (Portrait)"],
+      "default": "1:1 (Square)",
+      "required": true
+    }
+  ],
+  "outputs": {
+    "format": "json",
+    "schema": {
+      "type": "object",
+      "required": ["intent", "providers"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["generic"]
+        },
+        "providers": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "quality": {
+    "trustLevel": "verified",
+    "status": "production",
+    "score": 90,
+    "checks": {
+      "hasRequiredBlocks": true,
+      "hasInputsSchema": true,
+      "hasOutputFormat": true,
+      "hasQualityChecks": true,
+      "placeholderAlignment": true
+    },
+    "issues": [],
+    "fallback": {
+      "onSchemaFail": "repair_json",
+      "maxRetries": 1
+    }
+  },
+  "execution": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "temperature": 0.5,
+    "maxTokens": 2000
+  },
+  "agentReadiness": {
+    "isReady": true,
+    "automationPlatforms": ["n8n", "zapier"],
+    "requiredCapabilities": ["text-processing"],
+    "notes": "Flexible prompt generator for any image generation need"
+  },
+  "tags": ["image", "generic", "flexible", "multi-purpose", "visual"],
+  "author": "meema-team",
+  "createdAt": "2026-01-16T00:00:00Z",
+  "updatedAt": "2026-01-16T00:00:00Z"
+}

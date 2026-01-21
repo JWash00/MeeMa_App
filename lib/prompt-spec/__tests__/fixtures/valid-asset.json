@@ -1,0 +1,73 @@
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "version": "1.0.0",
+  "name": "Summarization Prompt",
+  "description": "Generates concise summaries from long-form text",
+  "author": "MeeMa Team",
+  "createdAt": "2025-01-01T00:00:00Z",
+  "updatedAt": "2025-01-17T00:00:00Z",
+  "capability": "summarization",
+  "modality": "text",
+  "status": "production",
+  "visibility": "public",
+  "riskTier": "low",
+  "tags": ["summarization", "text-processing"],
+  "systemPrompt": "You are an expert at creating concise, accurate summaries.",
+  "userPromptTemplate": "Summarize the following text in {{max_words}} words or less, using a {{tone}} tone:\n\n{{text}}",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "text": {
+        "type": "string",
+        "description": "The text to summarize"
+      },
+      "max_words": {
+        "type": "number",
+        "description": "Maximum words in summary"
+      },
+      "tone": {
+        "type": "string",
+        "enum": ["formal", "casual", "technical"],
+        "description": "Tone of the summary"
+      }
+    },
+    "required": ["text", "max_words", "tone"]
+  },
+  "outputBlocks": [
+    {
+      "key": "SUMMARY",
+      "description": "The generated summary",
+      "required": true,
+      "format": "markdown"
+    },
+    {
+      "key": "KEY_POINTS",
+      "description": "Bulleted list of key points",
+      "required": false,
+      "format": "markdown"
+    }
+  ],
+  "qaChecks": [
+    {
+      "id": "word-count",
+      "description": "Verify summary respects max_words limit",
+      "type": "content",
+      "severity": "error",
+      "autoFix": false
+    }
+  ],
+  "adapters": [
+    {
+      "provider": "openai",
+      "model": "gpt-4",
+      "temperature": 0.7,
+      "maxTokens": 500
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4.5",
+      "temperature": 0.7,
+      "maxTokens": 500
+    }
+  ]
+}

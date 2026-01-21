@@ -1,0 +1,163 @@
+{
+  "version": "0.1",
+  "prompt_id": "workflow_youtube_script_generator_v1",
+  "prompt_version": "1.0",
+  "description": "Test pack for YouTube Script Generator workflow - validates script generation for various topics and tones",
+  "test_cases": [
+    {
+      "id": "test_01_tech_review_informative",
+      "description": "Generate informative tech review script",
+      "inputs": {
+        "topic": "iPhone 15 Pro Max Camera Review",
+        "duration": "10",
+        "tone": "informative"
+      },
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "iPhone 15 Pro",
+          "description": "Output should mention the product being reviewed"
+        },
+        {
+          "type": "contains",
+          "value": "camera",
+          "description": "Output should focus on camera features"
+        },
+        {
+          "type": "not_contains",
+          "value": "Android",
+          "description": "Should not mention unrelated platforms"
+        },
+        {
+          "type": "max_words",
+          "value": 1500,
+          "description": "Script should be appropriate length for 10-minute video"
+        },
+        {
+          "type": "regex_match",
+          "value": "\\[SCENE|INTRO|OUTRO",
+          "description": "Should include scene markers or structure"
+        }
+      ]
+    },
+    {
+      "id": "test_02_tutorial_friendly",
+      "description": "Generate friendly tutorial script",
+      "inputs": {
+        "topic": "How to Edit Photos in Lightroom",
+        "duration": "15",
+        "tone": "friendly"
+      },
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "Lightroom",
+          "description": "Output should mention the software"
+        },
+        {
+          "type": "contains",
+          "value": "step",
+          "description": "Tutorial should include step-by-step guidance"
+        },
+        {
+          "type": "not_contains",
+          "value": "Photoshop",
+          "description": "Should focus on requested tool only"
+        },
+        {
+          "type": "max_words",
+          "value": 2200,
+          "description": "Script should be appropriate for 15-minute video"
+        }
+      ]
+    },
+    {
+      "id": "test_03_entertainment_casual",
+      "description": "Generate casual entertainment script",
+      "inputs": {
+        "topic": "Top 5 Budget Gaming Laptops 2024",
+        "duration": "8",
+        "tone": "casual"
+      },
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "laptop",
+          "description": "Output should mention laptops"
+        },
+        {
+          "type": "contains",
+          "value": "gaming",
+          "description": "Should focus on gaming aspect"
+        },
+        {
+          "type": "regex_match",
+          "value": "#[1-5]|number [1-5]|first|second|third|fourth|fifth",
+          "description": "Should include numbered list structure"
+        },
+        {
+          "type": "max_words",
+          "value": 1200,
+          "description": "Script should fit 8-minute format"
+        }
+      ]
+    },
+    {
+      "id": "test_04_educational_professional",
+      "description": "Generate professional educational script",
+      "inputs": {
+        "topic": "Introduction to Machine Learning Basics",
+        "duration": "12",
+        "tone": "professional"
+      },
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "machine learning",
+          "description": "Output should cover the main topic"
+        },
+        {
+          "type": "not_contains",
+          "value": "guys",
+          "description": "Professional tone should avoid casual language"
+        },
+        {
+          "type": "not_contains",
+          "value": "what's up",
+          "description": "Should maintain professional greeting style"
+        },
+        {
+          "type": "max_words",
+          "value": 1800,
+          "description": "Script should be appropriate for 12-minute educational content"
+        }
+      ]
+    },
+    {
+      "id": "test_05_short_form_quick",
+      "description": "Generate quick short-form script",
+      "inputs": {
+        "topic": "3 Quick Productivity Hacks",
+        "duration": "3",
+        "tone": "energetic"
+      },
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "productivity",
+          "description": "Output should focus on productivity"
+        },
+        {
+          "type": "max_words",
+          "value": 500,
+          "description": "Short video requires concise script"
+        },
+        {
+          "type": "regex_match",
+          "value": "hack|tip|trick",
+          "description": "Should use action-oriented language"
+        }
+      ]
+    }
+  ]
+}

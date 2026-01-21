@@ -2,6 +2,21 @@ import { createClient } from './server'
 import { Snippet, SnippetFilters } from '../types'
 
 /**
+ * SCHEMA REQUIREMENTS:
+ *
+ * This file assumes the following columns exist in the 'snippets' table:
+ * - category (TEXT) - Creator job category
+ * - audience (TEXT) - Target audience: 'creator', 'developer', or 'both'
+ * - type (TEXT) - Prompt type: 'prompt' or 'workflow'
+ * - version (TEXT) - Version number (e.g., "1.0")
+ * - template (TEXT) - Workflow template with {{placeholders}}
+ * - inputs_schema (JSONB) - Workflow input field definitions
+ *
+ * If these columns don't exist yet, run the migration in SCHEMA_UPDATES.md
+ * The app will function without them, but new features won't work.
+ */
+
+/**
  * Fetch all public snippets with optional filters
  * Server-side only
  */
@@ -129,4 +144,26 @@ export async function getAllTags(): Promise<string[]> {
   })
 
   return Array.from(allTags).sort()
+}
+
+/**
+ * Get unique categories from all snippets
+ * Server-side only
+ */
+export async function getUniqueCategories(): Promise<string[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('snippets')
+    .select('category')
+    .in('scope', ['official', 'public'])
+    .not('category', 'is', null)
+
+  if (error) {
+    console.error('Error fetching categories:', error)
+    return []
+  }
+
+  const categories = [...new Set(data.map(s => s.category).filter(Boolean) as string[])].sort()
+  return categories
 }

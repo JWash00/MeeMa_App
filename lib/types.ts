@@ -12,6 +12,16 @@ export interface Snippet {
   owner_id?: string | null
   created_at?: string
   updated_at?: string
+  // Extended fields for workflows and QA
+  type?: 'prompt' | 'workflow'
+  template?: string
+  inputs_schema?: Record<string, any>
+  version?: string
+  audience?: 'creator' | 'developer' | 'both'
+  category?: string
+  // NEW: Agent workflow fields (future-proofing)
+  isAgentReady?: boolean
+  outputsSchema?: Record<string, any>
 }
 
 export interface SnippetFilters {

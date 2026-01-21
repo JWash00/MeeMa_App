@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "mps.v0.1",
+  "id": "scene-generator",
+  "title": "Scene & Environment Generator",
+  "description": "Generate cinematic scene and environment prompts for backgrounds, concept art, and storytelling",
+  "version": "1.0",
+  "type": "workflow",
+  "category": "Visual/Scene",
+  "capability": "image_visual",
+  "renderTargets": ["midjourney_v6", "sdxl"],
+  "promptPartsSpec": {
+    "supportsNegative": true,
+    "supportsLighting": true,
+    "supportsComposition": true,
+    "supportsCamera": true
+  },
+  "content": {
+    "text": "## TASK\nGenerate a multi-provider image prompt pack for cinematic scenes and environments.\n\n## INPUTS\n- Scene Description: {{scene_description}}\n- Time of Day: {{time_of_day}}\n- Weather/Atmosphere: {{atmosphere}}\n- Style: {{art_style}}\n- Mood: {{mood}}\n\n## CONSTRAINTS\n- Output must be pure JSON (no markdown fences)\n- Include composition and camera angle details\n- Specify lighting conditions clearly\n- Consider depth and atmosphere\n\n## OUTPUT FORMAT\nReturn JSON with this exact structure:\n{\n  \"intent\": \"scene\",\n  \"providers\": {\n    \"midjourney_v6\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"ar\": \"16:9\", \"stylize\": 200 },\n      \"instructions\": \"...\"\n    },\n    \"sdxl\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"width\": 1344, \"height\": 768, \"steps\": 35, \"cfg\": 7 }\n    }\n  },\n  \"notes\": [\"usage tips\"]\n}\n\n## QUALITY CHECKS\n- [ ] Scene clearly described with depth\n- [ ] Lighting and atmosphere specified\n- [ ] Composition considered\n- [ ] No markdown in output",
+    "blocks": [
+      {
+        "type": "TASK",
+        "content": "Generate multi-provider scene/environment prompts",
+        "required": true
+      },
+      {
+        "type": "INPUTS",
+        "content": "Scene description, time of day, atmosphere, style, mood",
+        "required": true
+      },
+      {
+        "type": "CONSTRAINTS",
+        "content": "Pure JSON, include composition, specify lighting, consider depth",
+        "required": true
+      },
+      {
+        "type": "OUTPUT_FORMAT",
+        "content": "JSON prompt pack with providers object",
+        "required": true
+      },
+      {
+        "type": "QUALITY_CHECKS",
+        "content": "Scene depth, lighting/atmosphere, composition, no markdown",
+        "required": true
+      }
+    ],
+    "language": "markdown"
+  },
+  "inputs": [
+    {
+      "key": "scene_description",
+      "label": "Scene Description",
+      "type": "textarea",
+      "placeholder": "e.g., Ancient temple ruins in a dense jungle, overgrown with vines",
+      "required": true
+    },
+    {
+      "key": "time_of_day",
+      "label": "Time of Day",
+      "type": "select",
+      "options": ["Dawn", "Morning", "Midday", "Golden hour", "Sunset", "Dusk", "Night", "Midnight"],
+      "default": "Golden hour",
+      "required": true
+    },
+    {
+      "key": "atmosphere",
+      "label": "Weather/Atmosphere",
+      "type": "select",
+      "options": ["Clear sky", "Cloudy", "Foggy/Misty", "Rainy", "Stormy", "Snowy", "Dusty", "Magical/Fantasy"],
+      "default": "Clear sky",
+      "required": true
+    },
+    {
+      "key": "art_style",
+      "label": "Art Style",
+      "type": "select",
+      "options": ["Photorealistic", "Cinematic", "Concept art", "Anime/Manga", "Oil painting", "Digital matte painting", "Stylized"],
+      "default": "Cinematic",
+      "required": true
+    },
+    {
+      "key": "mood",
+      "label": "Mood",
+      "type": "select",
+      "options": ["Peaceful", "Epic", "Mysterious", "Dramatic", "Romantic", "Ominous", "Adventurous", "Melancholic"],
+      "default": "Epic",
+      "required": true
+    }
+  ],
+  "outputs": {
+    "format": "json",
+    "schema": {
+      "type": "object",
+      "required": ["intent", "providers"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["scene"]
+        },
+        "providers": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "quality": {
+    "trustLevel": "verified",
+    "status": "production",
+    "score": 93,
+    "checks": {
+      "hasRequiredBlocks": true,
+      "hasInputsSchema": true,
+      "hasOutputFormat": true,
+      "hasQualityChecks": true,
+      "placeholderAlignment": true
+    },
+    "issues": [],
+    "fallback": {
+      "onSchemaFail": "repair_json",
+      "maxRetries": 1
+    }
+  },
+  "execution": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "temperature": 0.6,
+    "maxTokens": 2000
+  },
+  "agentReadiness": {
+    "isReady": true,
+    "automationPlatforms": ["n8n"],
+    "requiredCapabilities": ["text-processing"],
+    "notes": "Great for background art, concept development, and visual storytelling"
+  },
+  "tags": ["scene", "environment", "landscape", "cinematic", "concept-art", "visual"],
+  "author": "meema-team",
+  "createdAt": "2026-01-16T00:00:00Z",
+  "updatedAt": "2026-01-16T00:00:00Z"
+}

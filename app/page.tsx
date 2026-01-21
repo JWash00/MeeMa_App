@@ -1,23 +1,27 @@
-import { getSnippets, getUniqueLanguages, getUniqueProviders, getAllTags } from '@/lib/supabase/snippets'
-import HomeClient from '@/components/HomeClient'
+import MeemaHeader from '@/components/landing/MeemaHeader'
+import MeemaHero from '@/components/landing/MeemaHero'
+import SocialProof from '@/components/landing/SocialProof'
+import Features from '@/components/landing/Features'
+import HowItWorks from '@/components/landing/HowItWorks'
+import MeemaCTA from '@/components/landing/MeemaCTA'
 
-export const dynamic = 'force-dynamic'
-
-export default async function Home() {
-  // Fetch data server-side
-  const [snippets, languages, providers, allTags] = await Promise.all([
-    getSnippets(),
-    getUniqueLanguages(),
-    getUniqueProviders(),
-    getAllTags(),
-  ])
-
+export default function LandingPage() {
   return (
-    <HomeClient
-      initialSnippets={snippets}
-      languages={languages}
-      providers={providers}
-      allTags={allTags}
-    />
+    <div className="min-h-screen bg-meema-slate-50 dark:bg-meema-slate-950 font-body">
+      <MeemaHeader />
+      <main>
+        <MeemaHero />
+        <SocialProof />
+        <Features />
+        <HowItWorks />
+        <MeemaCTA />
+      </main>
+      {/* Footer */}
+      <footer className="py-8 px-4 border-t border-meema-slate-200 dark:border-meema-slate-800">
+        <div className="max-w-7xl mx-auto text-center text-sm text-meema-slate-600 dark:text-meema-slate-300">
+          © {new Date().getFullYear()} Meema · Made for creators
+        </div>
+      </footer>
+    </div>
   )
 }

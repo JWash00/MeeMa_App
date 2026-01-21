@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "mps.v0.1",
+  "id": "headshot-generator",
+  "title": "Professional Headshot Generator",
+  "description": "Generate professional portrait and headshot prompts for business, LinkedIn, and personal branding",
+  "version": "1.0",
+  "type": "workflow",
+  "category": "Visual/Portrait",
+  "capability": "image_visual",
+  "renderTargets": ["midjourney_v6", "sdxl"],
+  "promptPartsSpec": {
+    "supportsNegative": true,
+    "supportsLighting": true,
+    "supportsComposition": true
+  },
+  "content": {
+    "text": "## TASK\nGenerate a multi-provider image prompt pack for professional headshots and portraits.\n\n## INPUTS\n- Subject Description: {{subject_description}}\n- Style: {{portrait_style}}\n- Background: {{background}}\n- Expression: {{expression}}\n- Attire: {{attire}}\n\n## CONSTRAINTS\n- Output must be pure JSON (no markdown fences)\n- Focus on professional, approachable appearance\n- Avoid unrealistic or heavily stylized results\n- Ensure proper lighting for flattering portraits\n\n## OUTPUT FORMAT\nReturn JSON with this exact structure:\n{\n  \"intent\": \"headshot\",\n  \"providers\": {\n    \"midjourney_v6\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"ar\": \"3:4\", \"stylize\": 50 },\n      \"instructions\": \"...\"\n    },\n    \"sdxl\": {\n      \"positive\": \"detailed prompt here\",\n      \"negative\": \"things to avoid\",\n      \"params\": { \"width\": 768, \"height\": 1024, \"steps\": 35, \"cfg\": 7 }\n    }\n  },\n  \"notes\": [\"usage tips\"]\n}\n\n## QUALITY CHECKS\n- [ ] Subject clearly described\n- [ ] Professional appearance maintained\n- [ ] Lighting appropriate for portraits\n- [ ] No markdown in output",
+    "blocks": [
+      {
+        "type": "TASK",
+        "content": "Generate multi-provider headshot prompts",
+        "required": true
+      },
+      {
+        "type": "INPUTS",
+        "content": "Subject description, style, background, expression, attire",
+        "required": true
+      },
+      {
+        "type": "CONSTRAINTS",
+        "content": "Pure JSON, professional look, realistic results, flattering lighting",
+        "required": true
+      },
+      {
+        "type": "OUTPUT_FORMAT",
+        "content": "JSON prompt pack with providers object",
+        "required": true
+      },
+      {
+        "type": "QUALITY_CHECKS",
+        "content": "Subject clarity, professional appearance, proper lighting, no markdown",
+        "required": true
+      }
+    ],
+    "language": "markdown"
+  },
+  "inputs": [
+    {
+      "key": "subject_description",
+      "label": "Subject Description",
+      "type": "textarea",
+      "placeholder": "e.g., Professional woman in her 30s with short brown hair",
+      "required": true
+    },
+    {
+      "key": "portrait_style",
+      "label": "Portrait Style",
+      "type": "select",
+      "options": ["Corporate Professional", "Creative/Artistic", "Casual Business", "Editorial", "LinkedIn Standard"],
+      "default": "Corporate Professional",
+      "required": true
+    },
+    {
+      "key": "background",
+      "label": "Background",
+      "type": "select",
+      "options": ["Neutral gray", "Office blur", "Outdoor blur", "Solid color", "Studio gradient"],
+      "default": "Neutral gray",
+      "required": true
+    },
+    {
+      "key": "expression",
+      "label": "Expression",
+      "type": "select",
+      "options": ["Confident smile", "Friendly approachable", "Serious professional", "Warm and inviting", "Neutral"],
+      "default": "Confident smile",
+      "required": true
+    },
+    {
+      "key": "attire",
+      "label": "Attire",
+      "type": "select",
+      "options": ["Business formal", "Business casual", "Smart casual", "Creative professional", "Industry specific"],
+      "default": "Business formal",
+      "required": true
+    }
+  ],
+  "outputs": {
+    "format": "json",
+    "schema": {
+      "type": "object",
+      "required": ["intent", "providers"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["headshot"]
+        },
+        "providers": {
+          "type": "object",
+          "minProperties": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "quality": {
+    "trustLevel": "gold",
+    "status": "production",
+    "score": 94,
+    "checks": {
+      "hasRequiredBlocks": true,
+      "hasInputsSchema": true,
+      "hasOutputFormat": true,
+      "hasQualityChecks": true,
+      "placeholderAlignment": true
+    },
+    "issues": [],
+    "fallback": {
+      "onSchemaFail": "repair_json",
+      "maxRetries": 1
+    }
+  },
+  "execution": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "temperature": 0.4,
+    "maxTokens": 2000
+  },
+  "agentReadiness": {
+    "isReady": true,
+    "automationPlatforms": ["n8n"],
+    "requiredCapabilities": ["text-processing"],
+    "notes": "For best results with real subjects, use img2img with a reference photo"
+  },
+  "tags": ["portrait", "headshot", "professional", "linkedin", "business", "visual"],
+  "author": "meema-team",
+  "createdAt": "2026-01-16T00:00:00Z",
+  "updatedAt": "2026-01-16T00:00:00Z"
+}

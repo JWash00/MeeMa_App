@@ -1,101 +1,94 @@
 'use client'
 
-import { Snippet, ProductionChecklistItem } from '@/lib/types'
+import { useState } from 'react'
+import { Snippet } from '@/lib/types'
 import CopyButton from './CopyButton'
-import ProductionChecklist from './ProductionChecklist'
+import { qaEvaluate } from '@/lib/qa/qaRouter'
+import { computeTrustStatus } from '@/lib/trust/trustUtils'
+import { TrustBadge } from '@/components/trust/TrustBadge'
+import DevTabPanel from './dev/DevTabPanel'
+import { useDeveloperMode } from '@/lib/hooks/useDeveloperMode'
+import { Maximize2, Minimize2 } from 'lucide-react'
 
 interface SnippetDetailProps {
   snippet: Snippet
 }
 
-// Derive production checklist from snippet code and metadata
-function getProductionChecklist(snippet: Snippet): ProductionChecklistItem[] {
-  const code = snippet.code.toLowerCase()
-  const description = snippet.description.toLowerCase()
-
-  return [
-    {
-      label: 'Includes retry / backoff logic',
-      checked: code.includes('retry') || code.includes('backoff') || code.includes('attempt'),
-      description: 'Automatically retries failed requests with exponential backoff'
-    },
-    {
-      label: 'Handles rate limits (429)',
-      checked: code.includes('429') || description.includes('rate limit'),
-      description: 'Properly detects and handles API rate limiting'
-    },
-    {
-      label: 'Uses timeouts or cancellation',
-      checked: code.includes('timeout') || code.includes('abort') || code.includes('cancel'),
-      description: 'Prevents hanging requests with timeout protection'
-    },
-    {
-      label: 'Comprehensive error handling',
-      checked: code.includes('try') && code.includes('catch') && code.includes('error'),
-      description: 'Catches and handles errors gracefully'
-    },
-    {
-      label: 'Type-safe implementation',
-      checked: snippet.language === 'typescript' || code.includes('interface') || code.includes('type'),
-      description: 'Uses TypeScript for compile-time safety'
-    },
-    {
-      label: 'Safe for production use',
-      checked: snippet.scope === 'official',
-      description: 'Vetted and approved for production environments'
-    },
-  ]
-}
-
 export default function SnippetDetail({ snippet }: SnippetDetailProps) {
-  const checklist = getProductionChecklist(snippet)
+  const [isCodeExpanded, setIsCodeExpanded] = useState(false)
+  // Compute trust status from QA evaluation
+  const qaResult = qaEvaluate(snippet)
+  const trustStatus = computeTrustStatus(qaResult)
+  const { isDeveloperMode } = useDeveloperMode()
 
   return (
-    <div className="space-y-6">
-      {/* Main snippet card */}
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <div className="mb-6">
-          <div className="flex items-start justify-between mb-3">
-            <h1 className="text-3xl font-bold text-gray-900">
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="mb-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-foreground">
               {snippet.title}
             </h1>
-            {snippet.provider && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                {snippet.provider}
-              </span>
-            )}
+            <TrustBadge status={trustStatus} size="md" />
           </div>
-          <p className="text-gray-600 mb-4">
-            {snippet.description}
-          </p>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-sm text-gray-500 font-mono">
-              {snippet.language}
+          {snippet.provider && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-900/40 text-purple-300">
+              {snippet.provider}
             </span>
-            <div className="flex flex-wrap gap-2">
-              {snippet.tags.map(tag => (
-                <span
-                  key={tag}
-                  className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+          )}
+        </div>
+        <p className="text-muted mb-4">
+          {snippet.description}
+        </p>
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-sm text-muted font-mono bg-surface-2 px-2 py-1 rounded">
+            {snippet.language}
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {snippet.tags.map(tag => (
+              <span
+                key={tag}
+                className="inline-block bg-accent/10 text-accent border border-accent/30 text-xs px-2 py-1 rounded"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
-
-        <div className="mb-4 flex justify-end">
-          <CopyButton code={snippet.code} snippetId={snippet.id} />
-        </div>
-
-        <pre className="bg-gray-900 text-gray-100 p-6 rounded-lg overflow-x-auto">
-          <code className="font-mono text-sm">{snippet.code}</code>
-        </pre>
       </div>
 
-      {/* Production Checklist */}
-      <ProductionChecklist items={checklist} />
+      {/* Dev Tabs (when developer mode is ON) */}
+      {isDeveloperMode ? (
+        <DevTabPanel snippet={snippet} />
+      ) : (
+        /* Code block (only when dev mode is OFF - dev mode uses Template tab instead) */
+        <div className="bg-surface-hover rounded-lg p-4 border border-surface-hover">
+          <div className="mb-3 flex justify-end">
+            <CopyButton code={snippet.code} snippetId={snippet.id} />
+          </div>
+          <pre className={`bg-background text-foreground p-4 rounded-lg overflow-x-auto border border-surface-hover transition-all ${isCodeExpanded ? 'max-h-none' : 'max-h-48 overflow-y-auto'}`}>
+            <code className="font-mono text-sm">{snippet.code}</code>
+          </pre>
+          <div className="mt-3 flex justify-center">
+            <button
+              onClick={() => setIsCodeExpanded(!isCodeExpanded)}
+              className="flex items-center gap-1.5 px-4 py-1.5 text-sm bg-surface-hover hover:bg-surface-hover/80 text-text-secondary hover:text-foreground rounded-lg transition-colors"
+            >
+              {isCodeExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+              {isCodeExpanded ? 'Collapse' : 'Expand'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Version info */}
+      <div className="flex items-center gap-4 text-xs text-text-muted">
+        <span>Version {snippet.version || '1.0'}</span>
+        {snippet.updated_at && (
+          <span>Updated {new Date(snippet.updated_at).toLocaleDateString()}</span>
+        )}
+      </div>
     </div>
   )
 }

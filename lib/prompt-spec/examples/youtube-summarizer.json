@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "mps.v0.1",
+  "id": "youtube-summarizer",
+  "title": "YouTube Video Summarizer",
+  "description": "Generate structured summaries of YouTube videos with key points, timestamps, and actionable insights",
+  "version": "1.0",
+  "type": "workflow",
+  "category": "Video Analysis",
+  "capability": "video_motion",
+  "content": {
+    "text": "## TASK\nSummarize the YouTube video transcript provided by the user, focusing on key takeaways and actionable insights.\n\n## INPUTS\n- Video URL: {{video_url}}\n- Summary Style: {{summary_style}}\n- Max Length: {{max_length}}\n\n## CONSTRAINTS\n- Focus on main ideas and actionable takeaways\n- Use timestamps when available in the transcript\n- Maintain objectivity and accuracy\n- Adapt tone to match {{summary_style}}\n- Keep summary within {{max_length}} constraint\n\n## OUTPUT FORMAT\nReturn a structured summary with these sections:\n\n1. **Title and Channel**\n   - Video title\n   - Channel name\n\n2. **Overview** (2-3 sentences)\n   - High-level summary of the video's purpose\n\n3. **Key Points** (bullet list with timestamps)\n   - [00:00] Introduction and context\n   - [02:30] Main point 1\n   - [05:15] Main point 2\n   - etc.\n\n4. **Actionable Insights** (numbered list)\n   - Concrete takeaways viewers can apply\n\n5. **Tags/Categories**\n   - Relevant topic tags\n\n## QUALITY CHECKS\n- [ ] All timestamps are accurate and match the transcript\n- [ ] Key points are distinct and non-overlapping\n- [ ] Summary length matches {{max_length}} constraint\n- [ ] Tone is consistent with {{summary_style}}\n- [ ] Actionable insights are concrete and practical",
+    "blocks": [
+      {
+        "type": "TASK",
+        "content": "Summarize the YouTube video transcript provided by the user, focusing on key takeaways and actionable insights.",
+        "required": true
+      },
+      {
+        "type": "INPUTS",
+        "content": "Video URL, Summary Style, Max Length",
+        "required": true
+      },
+      {
+        "type": "CONSTRAINTS",
+        "content": "Focus on main ideas, use timestamps, maintain objectivity, adapt tone, keep within length constraint",
+        "required": true
+      },
+      {
+        "type": "OUTPUT_FORMAT",
+        "content": "Structured summary with title, overview, key points with timestamps, actionable insights, and tags",
+        "required": true
+      },
+      {
+        "type": "QUALITY_CHECKS",
+        "content": "Verify timestamps, distinct points, length constraint, tone consistency, practical insights",
+        "required": true
+      }
+    ],
+    "language": "markdown"
+  },
+  "inputs": [
+    {
+      "key": "video_url",
+      "label": "YouTube Video URL",
+      "type": "text",
+      "placeholder": "https://youtube.com/watch?v=...",
+      "required": true,
+      "validation": {
+        "pattern": "^https?://(www\\.)?(youtube\\.com|youtu\\.be)/.+"
+      }
+    },
+    {
+      "key": "summary_style",
+      "label": "Summary Style",
+      "type": "select",
+      "options": ["Professional", "Casual", "Academic", "Brief"],
+      "default": "Professional",
+      "required": true
+    },
+    {
+      "key": "max_length",
+      "label": "Maximum Length",
+      "type": "select",
+      "options": ["Short (< 200 words)", "Medium (200-500 words)", "Long (500+ words)"],
+      "default": "Medium (200-500 words)",
+      "required": true
+    }
+  ],
+  "outputs": {
+    "format": "structured",
+    "schema": {
+      "type": "object",
+      "required": ["title", "channel", "overview", "keyPoints", "insights", "tags"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Video title"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Channel name"
+        },
+        "overview": {
+          "type": "string",
+          "description": "2-3 sentence overview"
+        },
+        "keyPoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["timestamp", "point"],
+            "properties": {
+              "timestamp": {
+                "type": "string",
+                "description": "Timestamp in [MM:SS] format"
+              },
+              "point": {
+                "type": "string",
+                "description": "Key point description"
+              }
+            }
+          }
+        },
+        "insights": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Actionable takeaways"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Topic tags"
+        }
+      }
+    },
+    "examples": [
+      "{\n  \"title\": \"How to Build Better Habits\",\n  \"channel\": \"Productivity Pro\",\n  \"overview\": \"This video explains the science of habit formation using the cue-routine-reward loop. It provides practical strategies for building lasting habits.\",\n  \"keyPoints\": [\n    {\"timestamp\": \"[00:00]\", \"point\": \"Introduction to habit psychology\"},\n    {\"timestamp\": \"[02:30]\", \"point\": \"The cue-routine-reward loop explained\"}\n  ],\n  \"insights\": [\n    \"Start with tiny habits (2 minutes or less)\",\n    \"Stack new habits onto existing ones\"\n  ],\n  \"tags\": [\"productivity\", \"habits\", \"self-improvement\"]\n}"
+    ]
+  },
+  "quality": {
+    "trustLevel": "verified",
+    "status": "production",
+    "score": 95,
+    "checks": {
+      "hasRequiredBlocks": true,
+      "hasInputsSchema": true,
+      "hasOutputFormat": true,
+      "hasQualityChecks": true,
+      "placeholderAlignment": true
+    },
+    "issues": []
+  },
+  "execution": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "temperature": 0.3,
+    "maxTokens": 2000
+  },
+  "agentReadiness": {
+    "isReady": true,
+    "automationPlatforms": ["n8n", "zapier"],
+    "requiredCapabilities": [
+      "youtube-api",
+      "transcript-extraction",
+      "text-processing"
+    ],
+    "notes": "Requires YouTube transcript extraction via YouTube API or third-party transcript service (e.g., youtube-transcript npm package)"
+  },
+  "tags": ["youtube", "video", "summary", "analysis", "content", "transcription"],
+  "author": "meema-team",
+  "createdAt": "2026-01-16T00:00:00Z",
+  "updatedAt": "2026-01-16T00:00:00Z"
+}
