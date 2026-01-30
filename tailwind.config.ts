@@ -1,6 +1,22 @@
 import type { Config } from "tailwindcss";
 import { colors } from './lib/styles/tokens/colors'
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette").default;
+
+// This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function addVariablesForColors({ addBase, theme }: any) {
+  const allColors = flattenColorPalette(theme("colors"));
+  const newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}
+
 export default {
   darkMode: 'class',
   content: [
@@ -13,6 +29,8 @@ export default {
       fontFamily: {
         heading: ['var(--font-heading)', 'sans-serif'],
         body: ['var(--font-body)', 'sans-serif'],
+        jakarta: ['var(--font-jakarta)', 'sans-serif'],
+        inter: ['var(--font-inter)', 'sans-serif'],
       },
       colors: {
         // NEW: Role-based semantic tokens
@@ -120,13 +138,33 @@ export default {
           },
           slate: {
             50: '#f8fafc',
+            100: '#f1f5f9',
             200: '#e2e8f0',
             300: '#cbd5e1',
+            400: '#94a3b8',
             600: '#475569',
             800: '#1e293b',
             900: '#0f172a',
             950: '#020617',
           },
+          // Hero accent colors
+          blue: {
+            500: '#3B82F6',
+            600: '#2563EB',
+          },
+          violet: {
+            500: '#8B5CF6',
+            600: '#7C3AED',
+          },
+          charcoal: {
+            900: '#1a1a2e',
+            700: '#374151',
+            500: '#6b7280',
+          },
+          // Gradient background colors
+          mint: '#E0F7F4',
+          cyan: '#CFFAFE',
+          softPink: '#FDF2F8',
         },
       },
       borderRadius: {
@@ -159,6 +197,8 @@ export default {
         'slide-up': 'slideUp 0.3s ease-out',
         'slide-in-right': 'slideInRight 0.3s ease-out',
         'spin-slow': 'spin-slow 8s linear infinite',
+        'aurora': 'aurora 60s linear infinite',
+        'marquee': 'marquee var(--duration, 30s) linear infinite',
       },
       keyframes: {
         shimmer: {
@@ -181,8 +221,15 @@ export default {
           from: { transform: 'rotate(0deg)' },
           to: { transform: 'rotate(360deg)' },
         },
+        aurora: {
+          from: { backgroundPosition: '50% 50%, 50% 50%' },
+          to: { backgroundPosition: '350% 50%, 350% 50%' },
+        },
+        marquee: {
+          to: { transform: 'translateX(-50%)' },
+        },
       },
     },
   },
-  plugins: [],
+  plugins: [addVariablesForColors],
 } satisfies Config;

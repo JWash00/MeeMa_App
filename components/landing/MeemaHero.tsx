@@ -2,55 +2,103 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Button from '../ui/Button'
 import { fadeSlideUp, staggerContainer } from '@/lib/landing/animations'
-import { LANDING } from '@/lib/voice/voice'
+import DashboardMockup from './DashboardMockup'
+import { AuroraBackground } from '../ui/aurora-background'
+import { AvatarCircles } from '../ui/avatar-circles'
+
+const avatarUrls = [
+  "https://avatars.githubusercontent.com/u/16860528",
+  "https://avatars.githubusercontent.com/u/20110627",
+  "https://avatars.githubusercontent.com/u/106103625",
+  "https://avatars.githubusercontent.com/u/59228569",
+  "https://avatars.githubusercontent.com/u/89768406",
+]
+
+function ShimmerText({ children, colors }: { children: React.ReactNode; colors: string }) {
+  return (
+    <span
+      className="inline-block bg-clip-text text-transparent animate-shimmer"
+      style={{
+        backgroundImage: `linear-gradient(90deg, ${colors})`,
+        backgroundSize: '200% 100%',
+      }}
+    >
+      {children}
+    </span>
+  )
+}
 
 export default function MeemaHero() {
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-meema-indigo-500/10 via-transparent to-meema-rose-500/10 dark:from-meema-indigo-500/5 dark:to-meema-rose-500/5" />
-
+    <AuroraBackground className="min-h-[85vh] px-4 sm:px-6 lg:px-8">
       {/* Content */}
-      <motion.div
-        className="relative z-10 max-w-4xl mx-auto text-center"
-        variants={staggerContainer}
-        initial="hidden"
-        animate="show"
-      >
-        <motion.h1
-          className="text-5xl sm:text-6xl lg:text-7xl font-bold text-meema-slate-900 dark:text-meema-slate-50 mb-6"
-          variants={fadeSlideUp}
-        >
-          {LANDING.hero.title}{' '}
-          <span className="text-meema-indigo-500">{LANDING.hero.titleAccent}</span>
-        </motion.h1>
+      <div className="relative z-10 max-w-7xl mx-auto w-full py-16 lg:py-24">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+          {/* Left: Text Content */}
+          <motion.div
+            className="flex-1 text-center lg:text-left"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+          >
+            <motion.div
+              className="font-jakarta font-bold leading-tight mb-6"
+              style={{ color: 'rgb(26, 32, 44)' }}
+              variants={fadeSlideUp}
+            >
+              <h1 className="text-[70px]">
+                Prompt <ShimmerText colors="#60a5fa, #3b82f6, #2563eb, #3b82f6, #60a5fa">Faster</ShimmerText>.
+              </h1>
+              <h1 className="text-[60px]">
+                Think <ShimmerText colors="#a78bfa, #8b5cf6, #7c3aed, #8b5cf6, #a78bfa">Less</ShimmerText>.
+              </h1>
+            </motion.div>
 
-        <motion.p
-          className="text-xl sm:text-2xl text-meema-slate-600 dark:text-meema-slate-300 mb-10 max-w-2xl mx-auto"
-          variants={fadeSlideUp}
-        >
-          {LANDING.hero.subtitle}
-        </motion.p>
+            <motion.p
+              className="font-inter font-normal text-[19px] mb-10 max-w-xl mx-auto lg:mx-0"
+              style={{ color: 'rgb(100, 100, 100)' }}
+              variants={fadeSlideUp}
+            >
+              <span className="font-semibold" style={{ color: 'rgb(26, 32, 44)' }}>
+                MeeMa turns AI chaos into production-grade output.
+              </span>{' '}
+              Battle-tested prompts that deliver, EVERY. SINGLE. TIME.
+            </motion.p>
 
-        <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          variants={fadeSlideUp}
-        >
-          <Link href="/library">
-            <Button variant="primary" className="text-lg px-8 py-4">
-              {LANDING.hero.ctaPrimary}
-            </Button>
-          </Link>
-          <Button variant="secondary" className="text-lg px-8 py-4">
-            {LANDING.hero.ctaSecondary}
-          </Button>
-        </motion.div>
-      </motion.div>
+            <motion.div
+              className="flex flex-row items-center justify-center lg:justify-start gap-5"
+              variants={fadeSlideUp}
+            >
+              <Link href="/signup">
+                <div className="group relative p-[2px] rounded-xl bg-transparent hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-cyan-500 transition-all">
+                  <button
+                    className="relative font-inter font-semibold text-[18px] text-white px-8 py-4 rounded-[10px] transition-all"
+                    style={{ backgroundColor: 'rgb(26, 32, 44)' }}
+                  >
+                    Get Started. It&apos;s FREE!
+                  </button>
+                </div>
+              </Link>
+              <div className="font-inter text-[14px] text-gray-500">
+                <p>Free forever.</p>
+                <p>No credit card.</p>
+              </div>
+            </motion.div>
+          </motion.div>
 
-      {/* Decorative Elements */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-meema-indigo-500/20 to-transparent" />
-    </section>
+          {/* Right: Dashboard Mockup */}
+          <div className="flex-1 hidden lg:flex flex-col items-center gap-6">
+            <DashboardMockup />
+            <div className="flex flex-col items-center gap-1">
+              <p className="font-inter font-normal text-gray-600">
+                <span className="text-[17px]">Rated </span><span className="text-[18px] font-medium">4.8</span><span className="text-[17px]">⭐ by creators</span>
+              </p>
+              <AvatarCircles avatarUrls={avatarUrls} numPeople={99} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </AuroraBackground>
   )
 }

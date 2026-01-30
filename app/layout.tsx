@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, DM_Sans } from 'next/font/google'
+import { Space_Grotesk, DM_Sans, Plus_Jakarta_Sans, Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
+import { AuthProvider } from '@/components/auth/AuthProvider'
 import { Toaster } from 'react-hot-toast'
 
 const spaceGrotesk = Space_Grotesk({
@@ -14,6 +15,18 @@ const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-body',
   weight: ['400', '500', '600', '700']
+})
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+  weight: ['700']
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  weight: ['400', '600', '700']
 })
 
 export const metadata: Metadata = {
@@ -62,8 +75,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${spaceGrotesk.variable} ${dmSans.variable}`}>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className={`${spaceGrotesk.variable} ${dmSans.variable} ${plusJakartaSans.variable} ${inter.variable}`} suppressHydrationWarning>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>

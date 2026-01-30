@@ -67,11 +67,17 @@
   --meema-text: #ffffff;
   --meema-text-muted: #a0a0a0;
   --meema-border: #2a2a2a;
+
+  /* Sky colors for Marquee component */
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
 }
 
 /* Dark mode (same as root) */
 .dark {
   /* Inherit all from root - single theme */
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
 }
 
 body {
