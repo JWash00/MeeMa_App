@@ -12,7 +12,7 @@ const isDev = process.env.NODE_ENV === 'development'
 /**
  * Warn if card height deviates from spec (156px)
  */
-export function useCardHeightWarning(cardRef: React.RefObject<HTMLDivElement>) {
+export function useCardHeightWarning(cardRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     if (!isDev || !cardRef.current) return
 
@@ -33,8 +33,8 @@ export function useCardHeightWarning(cardRef: React.RefObject<HTMLDivElement>) {
  * Warn if title or description is being truncated unexpectedly
  */
 export function useContentClampWarning(
-  titleRef: React.RefObject<HTMLElement>,
-  descRef: React.RefObject<HTMLElement>
+  titleRef: React.RefObject<HTMLElement | null>,
+  descRef: React.RefObject<HTMLElement | null>
 ) {
   useEffect(() => {
     if (!isDev) return
@@ -79,7 +79,7 @@ export function warnIfTooManyTags(tags: string[] | undefined) {
 /**
  * Warn if grid has unexpected column count
  */
-export function useGridColumnWarning(gridRef: React.RefObject<HTMLDivElement>) {
+export function useGridColumnWarning(gridRef: React.RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     if (!isDev || !gridRef.current) return
 
@@ -118,7 +118,7 @@ export function useGridColumnWarning(gridRef: React.RefObject<HTMLDivElement>) {
 /**
  * Warn if drawer width is incorrect
  */
-export function useDrawerWidthWarning(drawerRef: React.RefObject<HTMLDivElement>, isOpen: boolean) {
+export function useDrawerWidthWarning(drawerRef: React.RefObject<HTMLDivElement | null>, isOpen: boolean) {
   useEffect(() => {
     if (!isDev || !drawerRef.current || !isOpen) return
 

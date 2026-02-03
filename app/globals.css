@@ -135,3 +135,20 @@ body {
 .card-lift:hover {
   transform: translateY(-4px);
 }
+
+/* Force dark text on light backgrounds */
+input.bg-white,
+textarea.bg-white,
+select.bg-white,
+button.bg-white,
+input.bg-gray-50,
+textarea.bg-gray-50,
+select.bg-gray-50,
+button.bg-gray-50 {
+  color: #111827 !important;
+}
+
+input.bg-white::placeholder,
+textarea.bg-white::placeholder {
+  color: #9ca3af !important;
+}

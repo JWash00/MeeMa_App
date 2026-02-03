@@ -70,13 +70,13 @@ export default function MeemaHero() {
               className="flex flex-row items-center justify-center lg:justify-start gap-5"
               variants={fadeSlideUp}
             >
-              <Link href="/signup">
+              <Link href="/prompts">
                 <div className="group relative p-[2px] rounded-xl bg-transparent hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-cyan-500 transition-all">
                   <button
                     className="relative font-inter font-semibold text-[18px] text-white px-8 py-4 rounded-[10px] transition-all"
                     style={{ backgroundColor: 'rgb(26, 32, 44)' }}
                   >
-                    Get Started. It&apos;s FREE!
+                    Browse Prompts
                   </button>
                 </div>
               </Link>

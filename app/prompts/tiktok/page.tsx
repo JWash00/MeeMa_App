@@ -2,7 +2,9 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import type { CreateResponse, QAStatus, CreateRequest, Audience, TikTokLength, Tone } from '@/src/contracts/create'
+import { PaywallModal } from '@/components/PaywallModal'
 
 export default function TikTokPage() {
   const [prompt, setPrompt] = useState('')
@@ -15,12 +17,18 @@ export default function TikTokPage() {
   const [length, setLength] = useState<TikTokLength>('30s')
   const [tone, setTone] = useState<Tone>('punchy')
 
+  // Save state
+  const [showPaywall, setShowPaywall] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+
   async function onGenerate() {
     if (!prompt.trim()) return
 
     setIsLoading(true)
     setOutput('')
     setQaStatus(null)
+    setIsSaved(false)
 
     try {
       const request: CreateRequest = {
@@ -52,6 +60,47 @@ export default function TikTokPage() {
       setOutput(`Error: ${message}`)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  async function onSave() {
+    if (!output || isSaving || isSaved) return
+
+    setIsSaving(true)
+
+    try {
+      const response = await fetch('/api/assets/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          channel: 'tiktok',
+          payload: { prompt, output, constraints: { audience, length, tone } },
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.status === 403 && data.code === 'NOT_ENTITLED') {
+        setShowPaywall(true)
+        return
+      }
+
+      if (response.status === 401) {
+        toast.error('Please sign in to save.')
+        return
+      }
+
+      if (!response.ok) {
+        toast.error(data.message || 'Failed to save.')
+        return
+      }
+
+      setIsSaved(true)
+      toast.success('Saved!')
+    } catch {
+      toast.error('Failed to save.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -156,6 +205,13 @@ export default function TikTokPage() {
           <div className="mt-4 bg-white border border-gray-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-semibold text-gray-900">Generated Script</p>
+              <button
+                onClick={onSave}
+                disabled={isSaving || isSaved}
+                className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 text-gray-700 hover:bg-gray-200"
+              >
+                {isSaved ? 'Saved' : isSaving ? 'Saving...' : 'Save'}
+              </button>
             </div>
             <pre className="w-full p-3 text-sm rounded-lg border border-gray-200 bg-gray-50 text-gray-900 overflow-auto whitespace-pre-wrap max-h-[600px]">
               {output}
@@ -163,6 +219,8 @@ export default function TikTokPage() {
           </div>
         )}
       </main>
+
+      <PaywallModal isOpen={showPaywall} onClose={() => setShowPaywall(false)} />
     </div>
   )
 }

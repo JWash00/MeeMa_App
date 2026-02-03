@@ -4,12 +4,12 @@
  */
 
 export type Domain = 'content' | 'image_prompt' | 'video' | 'audio' | 'social_video' | 'unknown'
-export type Intent = 'explain' | 'tutorial' | 'promo' | 'cover' | 'product_shot' | 'qa' | 'tiktok_script' | 'unknown'
+export type Intent = 'explain' | 'tutorial' | 'promo' | 'cover' | 'product_shot' | 'qa' | 'tiktok_script' | 'youtube_shorts' | 'unknown'
 export type Platform = 'tiktok' | 'youtube' | 'instagram' | 'midjourney' | 'pika' | 'none'
 
 // Shared constraint types
 export type Audience = 'general' | 'beginner' | 'intermediate'
-export type Tone = 'neutral' | 'friendly' | 'punchy'
+export type Tone = 'neutral' | 'friendly' | 'punchy' | 'direct' | 'energetic' | 'calm'
 
 // Content-specific constraints
 export type ContentLength = 'short' | 'medium' | 'long'

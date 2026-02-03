@@ -1,6 +1,6 @@
 import { PromptAsset, InputSchema } from '../v1-types'
 import { validatePromptAsset } from '../validatePromptAsset'
-import { PromptSubmission, SubmissionResponse, SubmissionStatus, QaReport } from './models'
+import { PromptSubmission, SubmissionResponse, SubmissionStatus, QaReport, PromptScore } from './models'
 import { scorePrompt } from './scorePrompt'
 import { qaEvaluateSnippet } from '../../qa/promptQa'
 import { evaluateCompliance } from '../../spec/specCompliance'

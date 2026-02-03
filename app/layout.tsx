@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, DM_Sans, Plus_Jakarta_Sans, Inter } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from '@/components/theme/ThemeProvider'
-import { AuthProvider } from '@/components/auth/AuthProvider'
+import { ClientProviders } from '@/components/ClientProviders'
 import { Toaster } from 'react-hot-toast'
 
 const spaceGrotesk = Space_Grotesk({
@@ -76,9 +75,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${spaceGrotesk.variable} ${dmSans.variable} ${plusJakartaSans.variable} ${inter.variable}`} suppressHydrationWarning>
-        <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </ThemeProvider>
+        <ClientProviders>
+          {children}
+        </ClientProviders>
         <Toaster />
       </body>
     </html>

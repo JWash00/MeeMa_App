@@ -16,7 +16,7 @@ export default function Shell({ children, searchQuery, onSearchChange, onRecomme
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} onRecommendedClick={onRecommendedClick} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main content area */}
       <div className="lg:ml-64">

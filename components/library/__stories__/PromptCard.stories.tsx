@@ -196,6 +196,9 @@ export const Mobile: Story = {
  * Useful for seeing all variations at once.
  */
 export const AllStates: Story = {
+  args: {
+    data: FIXTURES.default,
+  },
   render: () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <PromptCard data={FIXTURES.default} />

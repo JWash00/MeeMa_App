@@ -60,10 +60,6 @@ export default {
           active: colors.brand.active,
         },
 
-        // Legacy tokens (compatibility)
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-
         // Prompt Toolkit semantic tokens (fallback)
         ptk: {
           bg: 'var(--ptk-bg)',
